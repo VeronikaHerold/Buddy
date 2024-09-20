@@ -1,0 +1,5 @@
+{
+    "model_name": "gpt2",
+    "train_epochs": 3,
+    "batch_size": 2
+  }  

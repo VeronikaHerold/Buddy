@@ -1,0 +1,25 @@
+Wovon hängt es generell ab, ob ein Unternehmen lieber etwas selber machen sollte oder dieses anderen überlässt?
+Make or buy - Besinnung auf die Kernkompetenzen eines Unternehmens. Entweder macht man es selbst oder man kauft es. Alles was man nicht gut kann, kauft man ein.
+
+Was versteht man unter einem Markt und was unter Marketing?
+Ein Markt ist der Ort des Zusammentreffens von Angebot und Nachfrage.
+Nach Meffert ist Marketing die bewusst marktorientierte Führung des gesamten Unternehmens oder marktorientiertes Entscheidungsverhalten.
+
+Wo entstand Marketing und warum?
+Marketing entstand in den USA durch den Überfluss an Waren, daher mussten die Unternehmen um die Kunden werben/buhlen.
+
+
+
+Simple lightning
+Point light: Das Licht, welches auftritt wird an den Stellen zurückgeworfen und die zurückgeworfene Energie ist abhängig vom Einfallswinkel des Lichts.
+Diffuse reflection: Das Licht reflektiert immer gleich unabhängig, vom Betrachtungswinkel.
+
+Kreuzprodukt
+A X B - Die beiden Vektoren definieren ein Parallelogramm.
+
+Was ist Metamerie?
+Verschiedene Spectral Distribution Functions, die dieselbe Farbwahrnehmmung beschreiben.
+
+Was wurde bei den "Color Matching Experiments" gemacht=
+Eine Zielfarbe sollte mit drei Lampen (Rot, Grün, Blau) repliziert werden.
+Das Resultat beinhaltete negative Werte, wenn Licht der Zielfarbe hinzugefügt wurde.

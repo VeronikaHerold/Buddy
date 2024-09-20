@@ -1,0 +1,86 @@
+[
+    {
+        "input": "Kreuzprodukt",
+        "output": "A X B - Die beiden Vektoren definieren ein Parallelogramm.",
+        "similarity": "Falsch",
+        "reward": 1
+    },
+    {
+        "input": "Kreuzprodukt",
+        "output": "A X B - Die beiden Vektoren definieren ein Parallelogramm.",
+        "similarity": "Falsch",
+        "reward": 1
+    },
+    {
+        "input": "Kreuzprodukt",
+        "output": "A X B - Die beiden Vektoren definieren ein Parallelogramm.",
+        "similarity": "Falsch",
+        "reward": 1
+    },
+    {
+        "input": "Kreuzprodukt",
+        "output": "A X B - Die beiden Vektoren definieren ein Parallelogramm.",
+        "similarity": "Falsch",
+        "reward": 1
+    },
+    {
+        "input": "Kreuzprodukt",
+        "output": "A X B - Die beiden Vektoren definieren ein Parallelogramm.",
+        "similarity": "Falsch",
+        "reward": 1
+    },
+    {
+        "input": "Kreuzprodukt",
+        "output": "A X B - Die beiden Vektoren definieren ein Parallelogramm.",
+        "similarity": "Falsch",
+        "reward": 1
+    },
+    {
+        "input": "Kreuzprodukt",
+        "output": "A X B - Die beiden Vektoren definieren ein Parallelogramm.",
+        "similarity": "Falsch",
+        "reward": 1
+    },
+    {
+        "input": "Kreuzprodukt",
+        "output": "A X B - Die beiden Vektoren definieren ein Parallelogramm.",
+        "similarity": "Falsch",
+        "reward": 1
+    },
+    {
+        "input": "Kreuzprodukt",
+        "output": "A X B - Die beiden Vektoren definieren ein Parallelogramm.",
+        "similarity": "Falsch",
+        "reward": 1
+    },
+    {
+        "input": "Kreuzprodukt",
+        "output": "A X B - Die beiden Vektoren definieren ein Parallelogramm.",
+        "similarity": "Falsch",
+        "reward": 1
+    },
+    {
+        "input": "Kreuzprodukt",
+        "output": "A X B - Die beiden Vektoren definieren ein Parallelogramm.",
+        "similarity": "Falsch",
+        "reward": 1
+    },
+    {
+        "input": "Kreuzprodukt",
+        "output": "A X B - Die beiden Vektoren definieren ein Parallelogramm.",
+        "similarity": "Falsch",
+        "reward": 1
+    },
+    {
+        "input": "Kreuzprodukt",
+        "output": "A X B - Die beiden Vektoren definieren ein Parallelogramm.",
+        "similarity": "Falsch",
+        "reward": 1
+    },
+    {
+        "input": "Kreuzprodukt",
+        "output": "A X B - Die beiden Vektoren definieren ein Parallelogramm.",
+        "similarity": "Falsch",
+        "reward": 1
+    }
+]
