@@ -2,9 +2,10 @@ import os
 import json
 import random
 import difflib
+import random
 from nltk.corpus import wordnet
 from models.ner_processing import extract_entities
-from training.buddy_mode import buddy_mode  # Buddy-Mode importieren
+
 
 def analyze_feedback_with_ner(feedback_text):
     """
@@ -41,29 +42,36 @@ def archive_feedback(filename="data/feedback_data.json", archive_filename="data/
                 json.dump(data[-max_entries:], file, indent=4, ensure_ascii=False)
 
             print(f"Feedback archiviert. Ältere Daten in {archive_filename} verschoben.")
-
-def save_feedback(entry, filename="data/feedback_data.json"):
+            
+def save_feedback(entry, theme, filename_format="data/{}/{}_feedback_data.json"):
     """
-    Speichert das Feedback und archiviert ältere Daten.
+    Speichert das Feedback themenspezifisch und archiviert ältere Daten.
     """
-    archive_feedback()  # Feedback archivieren, falls nötig
+    feedback_file_path = filename_format.format(theme, theme)
 
-    if os.path.exists(filename) and os.stat(filename).st_size > 0:
-        try:
-            with open(filename, "r+", encoding="utf-8") as file:
+    archive_feedback(feedback_file_path)  # Feedback archivieren, falls nötig
+
+    try:
+        if os.path.exists(feedback_file_path) and os.stat(feedback_file_path).st_size > 0:
+            with open(feedback_file_path, "r+", encoding="utf-8") as file:
                 data = json.load(file)
                 data.append(entry)
                 file.seek(0)
                 json.dump(data, file, indent=4, ensure_ascii=False)
-        except json.JSONDecodeError:
-            print(f"Ungültige Daten in {filename}. Datei wird neu erstellt.")
-            with open(filename, "w", encoding="utf-8") as file:
+        else:
+            with open(feedback_file_path, "w", encoding="utf-8") as file:
                 json.dump([entry], file, indent=4, ensure_ascii=False)
-    else:
-        with open(filename, "w", encoding="utf-8") as file:
+
+        print(f"Feedback in {feedback_file_path} gespeichert!")
+
+    except json.JSONDecodeError:
+        print(f"Ungültige Daten in {feedback_file_path}. Datei wird neu erstellt.")
+        with open(feedback_file_path, "w", encoding="utf-8") as file:
             json.dump([entry], file, indent=4, ensure_ascii=False)
 
-    print(f"Feedback in {filename} gespeichert!")
+    except Exception as e:
+        print(f"Fehler beim Speichern des Feedbacks: {e}")
+
 
 def augment_with_synonyms(text):
     """
@@ -83,9 +91,6 @@ def augment_with_synonyms(text):
     return " ".join(new_text)
 
 def load_feedback_data(filepath="data/feedback_data.json"):
-    """
-    Lädt Feedback-Daten aus einer JSON-Datei.
-    """
     try:
         with open(filepath, "r") as feedback_file:
             feedback_data = json.load(feedback_file)
@@ -93,7 +98,8 @@ def load_feedback_data(filepath="data/feedback_data.json"):
     except FileNotFoundError:
         print(f"Feedback-Datei {filepath} nicht gefunden.")
         return []
-
+    
+# Augmentierung während der Datenaufbereitung in prepare_data_with_feedback:
 def prepare_data_with_feedback(training_data_file="data/training_data.json", feedback_file="data/feedback_data.json"):
     """
     Bereitet Trainingsdaten vor und kombiniert sie mit Feedback-Daten. 
@@ -135,3 +141,4 @@ def prepare_data_with_feedback(training_data_file="data/training_data.json", fee
         augmented_data.append(augmented_entry)
 
     return augmented_data
+

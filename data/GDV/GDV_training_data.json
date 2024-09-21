@@ -1,0 +1,18 @@
+[
+    {
+        "input": "Was ist Simple lightning?",
+        "output": "Point light: Das Licht, welches auftritt wird an den Stellen zurückgeworfen und die zurückgeworfene Energie ist abhängig vom Einfallswinkel des Lichts."
+    },
+    {
+        "input": "Was ist GDV",
+        "output": "Graphische Datenverarbeitung"
+    },
+    {
+        "input": "Simple lightning",
+        "output": "Point light: Das Licht, welches auftritt wird an den Stellen zurückgeworfen und die zurückgeworfene Energie ist abhängig vom Einfallswinkel des Lichts."
+    },
+    {
+        "input": "Diffuse reflection: Das Licht reflektiert immer gleich unabhängig, vom Betrachtungswinkel.",
+        "output": "exit"
+    }
+]

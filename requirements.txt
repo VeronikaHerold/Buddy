@@ -7,5 +7,11 @@ de-core-news-sm>=3.0.0
 huggingface_hub
 ipython
 tqdm
+TTS
+pyttsx3 
+SpeechRecognition 
+pyaudio
+winsound
+tkinter
 datasets
 sentencepiece

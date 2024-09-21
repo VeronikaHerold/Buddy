@@ -20,6 +20,6 @@ A X B - Die beiden Vektoren definieren ein Parallelogramm.
 Was ist Metamerie?
 Verschiedene Spectral Distribution Functions, die dieselbe Farbwahrnehmmung beschreiben.
 
-Was wurde bei den "Color Matching Experiments" gemacht=
+Was wurde bei den "Color Matching Experiments" gemacht?
 Eine Zielfarbe sollte mit drei Lampen (Rot, Grün, Blau) repliziert werden.
 Das Resultat beinhaltete negative Werte, wenn Licht der Zielfarbe hinzugefügt wurde.

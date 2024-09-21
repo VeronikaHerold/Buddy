@@ -1,0 +1,40 @@
+[
+    {
+        "input": "hihi",
+        "output": "haha",
+        "similarity": 1.0,
+        "reward": 5
+    },
+    {
+        "input": "hihi",
+        "output": "haha",
+        "similarity": 1.0,
+        "reward": 5
+    },
+    {
+        "input": "hihi",
+        "output": "haha",
+        "similarity": 1.0,
+        "reward": 1
+    },
+    {
+        "input": "Hai",
+        "output": "Shark",
+        "reward": 5
+    },
+    {
+        "input": "Hai",
+        "output": "Shark",
+        "reward": 5
+    },
+    {
+        "input": "hihi",
+        "output": "haha",
+        "reward": 5
+    },
+    {
+        "input": "hihi",
+        "output": "haha",
+        "reward": 5
+    }
+]

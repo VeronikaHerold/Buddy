@@ -1,8 +1,9 @@
 import random
-import difflib 
+import difflib
 import json
+import re
 
-def buddy_mode(training_data_file="data/training_data.json"):
+def buddy_mode(training_data_file="data/{}/training_data.json", theme=""):
     """
     Buddy-Mode mit zwei Modi: 'Fragen' und 'Test'.
     Im Fragen-Modus stellt die KI Fragen und gibt Feedback.
@@ -15,7 +16,6 @@ def buddy_mode(training_data_file="data/training_data.json"):
         print(f"Keine Trainingsdaten in {training_data_file} gefunden.")
         return
 
-
     while True:
         mode = input("Wähle den Modus ('fragen', 'test', 'exit'): ").lower()
 
@@ -23,18 +23,16 @@ def buddy_mode(training_data_file="data/training_data.json"):
             print("Buddy-Mode beendet.")
             break
         elif mode == 'fragen':
-            fragen_modus(training_data)
+            fragen_modus(training_data, theme)
         elif mode == 'test':
-            test_modus(training_data)
+            test_modus(training_data, theme)
         else:
             print("Ungültige Eingabe. Bitte wähle 'fragen', 'test' oder 'exit'.")
 
-def fragen_modus(training_data):
-    """
-    Stellt dem Benutzer Fragen und gibt Feedback basierend auf der Antwortähnlichkeit.
-    """
+
+def fragen_modus(training_data, theme):
+    """Stellt dem Benutzer Fragen und gibt Feedback basierend auf der Antwortähnlichkeit."""
     from training.feedback import save_feedback
-    
     while True:
         question_entry = random.choice(training_data)
         question = question_entry["input"]
@@ -51,32 +49,31 @@ def fragen_modus(training_data):
             print(f"Tipp: Die Antwort beginnt mit: {correct_answer[0]}")
             continue
 
-        similarity = difflib.SequenceMatcher(None, correct_answer.lower(), user_answer.lower()).ratio()
-
-        if similarity == 1.0:
-            print("Deine Antwort ist 100% korrekt!")
-        elif similarity > 0.85:
-            print("Deine Antwort ist fast ganz richtig!")
-        elif similarity > 0.5:
-            print("Deine Antwort ist teilweise richtig.")
+        if normalize_text(user_answer) == normalize_text(correct_answer):
+            print("Deine Antwort ist korrekt!")
         else:
             print(f"Leider falsch. Die richtige Antwort wäre: {correct_answer}")
 
-        feedback = int(input("Wie bewertest du die Antwort? (1 = schlecht, 5 = perfekt): "))
-        entry = {"input": question, "output": correct_answer, "similarity": similarity, "reward": feedback}
-        save_feedback(entry)
+        while True:
+            feedback = input("Wie bewertest du die Antwort? (1 = schlecht, 5 = perfekt): ")
+            if feedback in {'1', '2', '3', '4', '5'}:
+                feedback = int(feedback)
+                break
+            else:
+                print("Ungültige Eingabe. Bitte gib eine Zahl zwischen 1 und 5 ein.")
+        entry = {"input": question, "output": correct_answer, "reward": feedback}
+        save_feedback(entry, theme)
 
-def test_modus(training_data):
-    """
-    Der Test-Modus stellt dem Benutzer Single- und Multiple-Choice-Fragen.
-    Die Antworten werden bewertet und am Ende wird eine Note vergeben.
-    """
+def test_modus(training_data, theme):
+    """Der Test-Modus stellt dem Benutzer Single- und Multiple-Choice-Fragen."""
     score = 0
     total_fragen = len(training_data)
 
+    print(f"Test für das Thema: {theme}")
+
     for frage_entry in training_data:
         frage = frage_entry["input"]
-        korrekt_antworten = frage_entry["output"].split(', ')  # Anpassung, falls mehrere korrekte Antworten
+        korrekt_antworten = frage_entry["output"].split(', ')
         print(f"\nFrage: {frage}")
 
         antwort_optionen = generate_answer_options(korrekt_antworten)
@@ -85,7 +82,6 @@ def test_modus(training_data):
 
         user_antworten = input("Gib die richtigen Antwortnummern ein (z.B. '1' oder '1,2'): ").split(',')
 
-        # Überprüfen, ob die gegebene Antwort korrekt ist
         user_antworten = [antwort_optionen[int(num.strip()) - 1] for num in user_antworten]
 
         if set(user_antworten) == set(korrekt_antworten):
@@ -99,17 +95,12 @@ def test_modus(training_data):
     print(f"Deine Note: {note}")
 
 def generate_answer_options(korrekt_antworten):
-    """
-    Erzeugt Antwortoptionen inklusive der korrekten Antworten.
-    Hier können auch ablenkende (falsche) Antworten hinzugefügt werden.
-    """
-    alle_antworten = set(korrekt_antworten + ["Falsch1", "Falsch2", "Falsch3"])  # Beispiel für ablenkende Antworten
+    """Erzeugt Antwortoptionen inklusive der korrekten Antworten."""
+    alle_antworten = set(korrekt_antworten + ["Falsch1", "Falsch2", "Falsch3"])
     return list(alle_antworten)
 
 def calculate_grade(score, total_fragen):
-    """
-    Berechnet die Note basierend auf dem Ergebnis des Tests.
-    """
+    """Berechnet die Note basierend auf dem Ergebnis des Tests."""
     prozent = (score / total_fragen) * 100
     if prozent >= 90:
         return "1"
@@ -121,3 +112,6 @@ def calculate_grade(score, total_fragen):
         return "4"
     else:
         return "5"
+
+def normalize_text(text):
+    return re.sub(r'\s+', ' ', text.strip().lower())

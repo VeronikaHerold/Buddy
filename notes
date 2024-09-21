@@ -7,3 +7,17 @@ git init
 git add <dateiname>
 git commit -m "Beschreibung der Änderung"
 git push
+
+
+
+
+
+- wie useful config?
+- ner processing funktioniert??
+- Regex Leerzeile ignorieren, groß und kleinschreibung ignorieren nvm ist im strip & lower dabei lol außer leerzeichen
+- Bei data/ unterordner erstellen lassen mit namen vom Thema und dort (Thema)_feedback_data und (Thema)_traning_data speichern, für die übersicht check
+- main clean lassen, timer in eigene .py check
+
+
+
+
