@@ -3,4 +3,9 @@ transformers
 ipywidgets
 nltk
 spacy
-python -m spacy download de_core_news_sm
+de-core-news-sm>=3.0.0
+huggingface_hub
+ipython
+tqdm
+datasets
+sentencepiece

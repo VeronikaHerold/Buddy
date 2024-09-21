@@ -2,9 +2,9 @@ import os
 import json
 import random
 import difflib
-import random
 from nltk.corpus import wordnet
 from models.ner_processing import extract_entities
+from training.buddy_mode import buddy_mode  # Buddy-Mode importieren
 
 def analyze_feedback_with_ner(feedback_text):
     """
@@ -41,7 +41,7 @@ def archive_feedback(filename="data/feedback_data.json", archive_filename="data/
                 json.dump(data[-max_entries:], file, indent=4, ensure_ascii=False)
 
             print(f"Feedback archiviert. Ältere Daten in {archive_filename} verschoben.")
-            
+
 def save_feedback(entry, filename="data/feedback_data.json"):
     """
     Speichert das Feedback und archiviert ältere Daten.
@@ -83,6 +83,9 @@ def augment_with_synonyms(text):
     return " ".join(new_text)
 
 def load_feedback_data(filepath="data/feedback_data.json"):
+    """
+    Lädt Feedback-Daten aus einer JSON-Datei.
+    """
     try:
         with open(filepath, "r") as feedback_file:
             feedback_data = json.load(feedback_file)
@@ -90,8 +93,7 @@ def load_feedback_data(filepath="data/feedback_data.json"):
     except FileNotFoundError:
         print(f"Feedback-Datei {filepath} nicht gefunden.")
         return []
-    
-# Augmentierung während der Datenaufbereitung in prepare_data_with_feedback:
+
 def prepare_data_with_feedback(training_data_file="data/training_data.json", feedback_file="data/feedback_data.json"):
     """
     Bereitet Trainingsdaten vor und kombiniert sie mit Feedback-Daten. 
@@ -133,63 +135,3 @@ def prepare_data_with_feedback(training_data_file="data/training_data.json", fee
         augmented_data.append(augmented_entry)
 
     return augmented_data
-def buddy_mode(training_data_file="data/training_data.json"):
-    """
-    Buddy-Mode: Die KI stellt Fragen, der Benutzer antwortet, und es wird überprüft,
-    ob die Antwort richtig ist. Das Feedback wird basierend auf der Antwortähnlichkeit gegeben, mit Tipp-Funktion.
-    """
-    try:
-        with open(training_data_file, "r", encoding="utf-8") as file:
-            training_data = json.load(file)
-    except FileNotFoundError:
-        print(f"Keine Trainingsdaten in {training_data_file} gefunden.")
-        return
-    
-    while True:
-        question_entry = random.choice(training_data)
-        question = question_entry["input"]
-        correct_answer = question_entry["output"]
-
-        print(f"Frage: {question}")
-        user_answer = input("Deine Antwort (oder 'hint' für einen Tipp, 'exit' zum Beenden): ").strip()
-
-        if user_answer.lower() == 'exit':
-            print("Buddy-Mode beendet.")
-            break
-
-        if user_answer.lower() == 'hint':
-            print(f"Tipp: Die Antwort beginnt mit: {correct_answer[0]}")
-            continue
-
-        # Antworten vergleichen
-        similarity = difflib.SequenceMatcher(None, correct_answer.lower(), user_answer.lower()).ratio()
-
-        # Feedback geben
-        if similarity == 1.0:
-            print("Deine Antwort ist 100% korrekt!")
-            feedback_message = "100% korrekt"
-        elif similarity > 0.85:
-            print("Deine Antwort ist fast ganz richtig!")
-            feedback_message = "Fast ganz richtig"
-        elif similarity > 0.5:
-            print("Deine Antwort ist teilweise richtig.")
-            feedback_message = "Teilweise richtig"
-        else:
-            print(f"Leider ist deine Antwort falsch. Die richtige Antwort wäre: {correct_answer}")
-            feedback_message = "Falsch"
-
-        # Benutzer-Feedback erfassen (Skala von 1 bis 5)
-        while True:
-            try:
-                feedback = int(input("Wie bewertest du die Antwort? (1 = schlecht, 5 = perfekt): "))
-                if 1 <= feedback <= 5:
-                    break
-                else:
-                    print("Bitte eine Zahl zwischen 1 und 5 eingeben.")
-            except ValueError:
-                print("Ungültige Eingabe. Bitte eine Zahl zwischen 1 und 5 eingeben.")
-
-        # Feedback speichern
-        entry = {"input": question, "output": correct_answer, "similarity": feedback_message, "reward": feedback}
-        save_feedback(entry)
-

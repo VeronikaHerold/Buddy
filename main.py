@@ -5,7 +5,12 @@ from training.feedback import buddy_mode
 def main():
     print("Willkommen zum KI-Lern-Buddy!")
     
-    theme = input("Wähle ein Thema oder erstelle ein neues: ").strip()
+    try:
+        theme = input("Wähle ein Thema oder erstelle ein neues: ").strip()
+        theme_file = f"data/{theme}_training_data.json"
+    except KeyboardInterrupt:
+        print("\nProgramm wurde durch Benutzerabbruch (Strg+C) beendet.")
+        exit(0)  
     theme_file = f"data/{theme}_training_data.json"
     
     while True:

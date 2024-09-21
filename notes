@@ -2,3 +2,8 @@
 2. venv\Scripts\activate
 3. python main.py
 
+git status
+git init
+git add <dateiname>
+git commit -m "Beschreibung der Änderung"
+git push
