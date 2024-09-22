@@ -10,8 +10,7 @@ Marketing entstand in den USA durch den Überfluss an Waren, daher mussten die U
 
 
 
-Simple lightning
-Point light: Das Licht, welches auftritt wird an den Stellen zurückgeworfen und die zurückgeworfene Energie ist abhängig vom Einfallswinkel des Lichts.
+Point light: Das Licht, welches auftritt wird an den Stellen zurückgeworfen und die zurückgeworfene Energie ist abhängig vom Einfallswinkel des Lichts
 Diffuse reflection: Das Licht reflektiert immer gleich unabhängig, vom Betrachtungswinkel.
 
 Kreuzprodukt
@@ -20,6 +19,5 @@ A X B - Die beiden Vektoren definieren ein Parallelogramm.
 Was ist Metamerie?
 Verschiedene Spectral Distribution Functions, die dieselbe Farbwahrnehmmung beschreiben.
 
-Was wurde bei den "Color Matching Experiments" gemacht?
-Eine Zielfarbe sollte mit drei Lampen (Rot, Grün, Blau) repliziert werden.
-Das Resultat beinhaltete negative Werte, wenn Licht der Zielfarbe hinzugefügt wurde.
+Was wurdetbei den "Color Matching Experiments" gemacht?
+Eine Zielfarbe sollte mit drei Lampen (Rot, Grün, Blau) repliziert werden und das Resultat beinhaltete negative Werte, wenn Licht der Zielfarbe hinzugefügt wurde.

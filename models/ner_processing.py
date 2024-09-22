@@ -1,7 +1,4 @@
-# ner_processing.py
 import spacy
-
-# Laden des vortrainierten SpaCy-Modells für NER (z.B. "de_core_news_sm" für Deutsch)
 nlp = spacy.load("de_core_news_sm")
 
 def extract_entities(text):

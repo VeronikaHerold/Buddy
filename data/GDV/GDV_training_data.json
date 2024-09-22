@@ -1,18 +1,22 @@
 [
     {
-        "input": "Was ist Simple lightning?",
-        "output": "Point light: Das Licht, welches auftritt wird an den Stellen zurückgeworfen und die zurückgeworfene Energie ist abhängig vom Einfallswinkel des Lichts."
+        "input": "Point light",
+        "output": "Das Licht, welches auftritt wird an den Stellen zurückgeworfen und die zurückgeworfene Energie ist abhängig vom Einfallswinkel des Lichts"
     },
     {
-        "input": "Was ist GDV",
-        "output": "Graphische Datenverarbeitung"
+        "input": "Diffuse reflection",
+        "output": "Das Licht reflektiert immer gleich unabhängig, vom Betrachtungswinkel"
     },
     {
-        "input": "Simple lightning",
-        "output": "Point light: Das Licht, welches auftritt wird an den Stellen zurückgeworfen und die zurückgeworfene Energie ist abhängig vom Einfallswinkel des Lichts."
+        "input": "Kreuzprodukt",
+        "output": "A X B - Die beiden Vektoren definieren ein Parallelogramm"
     },
     {
-        "input": "Diffuse reflection: Das Licht reflektiert immer gleich unabhängig, vom Betrachtungswinkel.",
-        "output": "exit"
+        "input": "Was ist Metamerie?",
+        "output": "Verschiedene Spectral Distribution Functions, die dieselbe Farbwahrnehmmung beschreiben"
+    },
+    {
+        "input": "Was wurdetbei den \"Color Matching Experiments\" gemacht?",
+        "output": "Eine Zielfarbe sollte mit drei Lampen (Rot, Grün, Blau) repliziert werden und das Resultat beinhaltete negative Werte, wenn Licht der Zielfarbe hinzugefügt wurde."
     }
 ]

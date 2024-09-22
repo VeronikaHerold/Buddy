@@ -2,6 +2,8 @@ import random
 import difflib
 import json
 import re
+from models.responses import generate_response_with_ner
+
 
 def buddy_mode(training_data_file="data/{}/training_data.json", theme=""):
     """
@@ -31,7 +33,6 @@ def buddy_mode(training_data_file="data/{}/training_data.json", theme=""):
 
 
 def fragen_modus(training_data, theme):
-    """Stellt dem Benutzer Fragen und gibt Feedback basierend auf der Antwortähnlichkeit."""
     from training.feedback import save_feedback
     while True:
         question_entry = random.choice(training_data)
@@ -48,6 +49,10 @@ def fragen_modus(training_data, theme):
         if user_answer.lower() == 'hint':
             print(f"Tipp: Die Antwort beginnt mit: {correct_answer[0]}")
             continue
+
+        # Hier wird die KI-Antwort generiert
+        ai_response = generate_response_with_ner(question)
+        print(f"KI-Antwort: {ai_response}")
 
         if normalize_text(user_answer) == normalize_text(correct_answer):
             print("Deine Antwort ist korrekt!")

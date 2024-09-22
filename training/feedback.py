@@ -7,6 +7,7 @@ from nltk.corpus import wordnet
 from models.ner_processing import extract_entities
 
 
+
 def analyze_feedback_with_ner(feedback_text):
     """
     Analysiert das Feedback unter Verwendung von NER.
@@ -15,7 +16,7 @@ def analyze_feedback_with_ner(feedback_text):
     # Hier könntest du die extrahierten Entitäten weiter verarbeiten oder analysieren
     return entities
 
-def archive_feedback(filename="data/feedback_data.json", archive_filename="data/feedback_archive.json", max_entries=100):
+def archive_feedback(filename="data/{}/{}_feedback_data.json", archive_filename="data/{}/{}_feedback_data.json", max_entries=200):
     """
     Archiviert ältere Feedback-Daten, wenn die Datei eine bestimmte Größe überschreitet.
     """
@@ -49,7 +50,7 @@ def save_feedback(entry, theme, filename_format="data/{}/{}_feedback_data.json")
     """
     feedback_file_path = filename_format.format(theme, theme)
 
-    archive_feedback(feedback_file_path)  # Feedback archivieren, falls nötig
+    archive_feedback(feedback_file_path) 
 
     try:
         if os.path.exists(feedback_file_path) and os.stat(feedback_file_path).st_size > 0:
@@ -106,18 +107,13 @@ def prepare_data_with_feedback(training_data_file="data/training_data.json", fee
     Falls keine Dateien vorhanden sind, werden Standardfragen verwendet. 
     Außerdem wird eine Datenaugmentierung durch Synonym-Ersetzungen durchgeführt.
     """
-    # Standarddaten, falls keine Trainingsdaten vorhanden sind
-    default_training_data = [
-        {"input": "Was ist das Kreuzprodukt?", "output": "A X B - Die beiden Vektoren definieren ein Parallelogramm."}
-    ]
     
     # Versuche, die Trainingsdaten zu laden, oder verwende Standarddaten
     try:
         with open(training_data_file, "r", encoding="utf-8") as file:
             training_data = json.load(file)
     except FileNotFoundError:
-        print(f"Keine Trainingsdaten gefunden. Standardfragen werden genutzt.")
-        training_data = default_training_data
+        print(f"Keine Trainingsdaten gefunden.")
 
     # Versuche, Feedbackdaten zu laden, oder verwende eine leere Liste
     try:
@@ -127,7 +123,6 @@ def prepare_data_with_feedback(training_data_file="data/training_data.json", fee
         print(f"Keine Feedbackdaten gefunden.")
         feedback_data = []
 
-    # Kombiniere Trainingsdaten mit Feedback-Daten
     combined_data = training_data + feedback_data
 
     # Augmentiere Daten durch Synonym-Ersetzungen
@@ -141,4 +136,3 @@ def prepare_data_with_feedback(training_data_file="data/training_data.json", fee
         augmented_data.append(augmented_entry)
 
     return augmented_data
-
