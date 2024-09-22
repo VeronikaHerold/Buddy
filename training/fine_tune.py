@@ -5,26 +5,32 @@ import json
 from torch.utils.data import Dataset, DataLoader
 from training.feedback import load_feedback_data
 
-
-# Definiere ein einfaches neuronales Netz
 class SimpleNN(nn.Module):
-    def __init__(self, input_size, hidden_size, output_size):
+    def __init__(self, input_size: int, hidden_size: int, output_size: int) -> None:
         super(SimpleNN, self).__init__()
         self.fc1 = nn.Linear(input_size, hidden_size)
+        nn.init.kaiming_uniform_(self.fc1.weight)
         self.relu = nn.ReLU()
+        self.dropout = nn.Dropout(p=0.5)
         self.fc2 = nn.Linear(hidden_size, output_size)
+        nn.init.kaiming_uniform_(self.fc2.weight)
 
     def forward(self, x):
         out = self.fc1(x)
         out = self.relu(out)
+        out = self.dropout(out)
         out = self.fc2(out)
         return out
 
-# Tokenizer: Einfache Tokenisierung durch Wortindizes
+    def save_model(self, path: str) -> None:
+        torch.save(self.state_dict(), path)
+
+    def load_model(self, path: str) -> None:
+        self.load_state_dict(torch.load(path))
+
 def simple_tokenizer(text, vocab):
     return [vocab.get(word, vocab["<UNK>"]) for word in text.split()]
 
-# Dataset für das Feedback
 class CustomFeedbackDataset(Dataset):
     def __init__(self, feedback_data, vocab, max_length=512):
         self.feedback_data = feedback_data
@@ -52,14 +58,21 @@ class CustomFeedbackDataset(Dataset):
             'feedback': torch.tensor(feedback_score, dtype=torch.float)
         }
 
+def build_vocab(feedback_data):
+    vocab = {"<PAD>": 0, "<UNK>": 1}
+    for item in feedback_data:
+        for word in item['input'].split() + item['output'].split():
+            if word not in vocab:
+                vocab[word] = len(vocab)
+    return vocab
+
 def fine_tune_custom_model():
-    feedback_data = load_feedback_data()
+    feedback_data = load_feedback_data("path/to/feedback.json")
     vocab = build_vocab(feedback_data)
     dataset = CustomFeedbackDataset(feedback_data, vocab)
     with open("config/config.json", "r") as config_file:
         config = json.load(config_file)
 
-    # Definiere das Modell und den Optimizer
     input_size = 512  
     hidden_size = 128  
     output_size = len(vocab) 
@@ -69,7 +82,6 @@ def fine_tune_custom_model():
 
     dataloader = DataLoader(dataset, batch_size=config["batch_size"], shuffle=True)
 
-    # Training
     for epoch in range(config["train_epochs"]):
         total_loss = 0
         for batch in dataloader:
@@ -87,14 +99,5 @@ def fine_tune_custom_model():
 
         print(f"Epoch {epoch + 1}/{config['train_epochs']}, Verlust: {total_loss/len(dataloader)}")
 
-    # Speichere das trainierte Modell
     torch.save(model.state_dict(), "models/custom_model.pth")
     print("Modelltraining abgeschlossen und gespeichert.")
-    
-def build_vocab(feedback_data):
-    vocab = {"<PAD>": 0, "<UNK>": 1}
-    for item in feedback_data:
-        for word in item['input'].split() + item['output'].split():
-            if word not in vocab:
-                vocab[word] = len(vocab)
-    return vocab

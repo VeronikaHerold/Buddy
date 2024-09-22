@@ -1,57 +1,61 @@
+import logging
 import os
+from typing import List, Dict
+from functools import lru_cache
 import json
-import random
-import difflib
 import random
 from nltk.corpus import wordnet
 from models.ner_processing import extract_entities
+from _main.utils import speak
 
 
+def load_feedback_data(filepath: str) -> dict:
+    if os.path.exists(filepath):
+        try:
+            with open(filepath, "r") as feedback_file:
+                feedback_data = json.load(feedback_file)
+                return feedback_data
+        except json.JSONDecodeError:
+            logging.error(f"Error decoding JSON file {filepath}.")
+            return {}
+    else:
+        logging.error(f"Feedback-Datei {filepath} nicht gefunden.")
+        return {}
 
-def analyze_feedback_with_ner(feedback_text):
-    """
-    Analysiert das Feedback unter Verwendung von NER.
-    """
-    entities = extract_entities(feedback_text)
-    # Hier könntest du die extrahierten Entitäten weiter verarbeiten oder analysieren
-    return entities
+def append_feedback_data(new_feedback, filepath: str):
+    feedback_data = load_feedback_data(filepath)
+    feedback_data.append(new_feedback)
+    with open(filepath, "w") as feedback_file:
+        json.dump(feedback_data, feedback_file)
 
-def archive_feedback(filename="data/{}/{}_feedback_data.json", archive_filename="data/{}/{}_feedback_data.json", max_entries=200):
-    """
-    Archiviert ältere Feedback-Daten, wenn die Datei eine bestimmte Größe überschreitet.
-    """
-    if os.path.exists(filename) and os.stat(filename).st_size > 0:
-        with open(filename, "r", encoding="utf-8") as file:
-            data = json.load(file)
-        
-        # Prüfen, ob die Anzahl der Einträge das Limit überschreitet
+@lru_cache
+def check_file_existence(filepath):
+    return os.path.exists(filepath)
+
+def archive_feedback(filename, archive_filename, max_entries=200):
+    try:
+        data = []
+        if check_file_existence(filename) and os.stat(filename).st_size > 0:
+            with open(filename, "r", encoding="utf-8") as file:
+                data = json.load(file)
         if len(data) > max_entries:
             archive_data = []
-            
-            # Wenn es bereits archivierte Daten gibt, diese laden
-            if os.path.exists(archive_filename):
+            if check_file_existence(archive_filename):
                 with open(archive_filename, "r", encoding="utf-8") as archive_file:
                     archive_data = json.load(archive_file)
-            
-            # Älteste Einträge archivieren
             archive_data.extend(data[:len(data) - max_entries])
             with open(archive_filename, "w", encoding="utf-8") as archive_file:
                 json.dump(archive_data, archive_file, indent=4, ensure_ascii=False)
-            
-            # Feedback-Datei kürzen
             with open(filename, "w", encoding="utf-8") as file:
                 json.dump(data[-max_entries:], file, indent=4, ensure_ascii=False)
+            logging.info(f"Feedback archiviert. Ältere Daten in {archive_filename} verschoben.")
+    except (OSError, ValueError) as e:
+        logging.error(f"Error occurred: {e}")
 
-            print(f"Feedback archiviert. Ältere Daten in {archive_filename} verschoben.")
-            
-def save_feedback(entry, theme, filename_format="data/{}/{}_feedback_data.json"):
-    """
-    Speichert das Feedback themenspezifisch und archiviert ältere Daten.
-    """
+def save_feedback(entry: dict, theme: str, filename_format: str = "data/{}/{}_feedback_data.json") -> None:
     feedback_file_path = filename_format.format(theme, theme)
-
-    archive_feedback(feedback_file_path) 
-
+    archive_file_path = filename_format.format(theme, f"{theme}_archive")
+    archive_feedback(feedback_file_path, archive_file_path)  
     try:
         if os.path.exists(feedback_file_path) and os.stat(feedback_file_path).st_size > 0:
             with open(feedback_file_path, "r+", encoding="utf-8") as file:
@@ -62,25 +66,12 @@ def save_feedback(entry, theme, filename_format="data/{}/{}_feedback_data.json")
         else:
             with open(feedback_file_path, "w", encoding="utf-8") as file:
                 json.dump([entry], file, indent=4, ensure_ascii=False)
-
-        print(f"Feedback in {feedback_file_path} gespeichert!")
-
-    except json.JSONDecodeError:
-        print(f"Ungültige Daten in {feedback_file_path}. Datei wird neu erstellt.")
-        with open(feedback_file_path, "w", encoding="utf-8") as file:
-            json.dump([entry], file, indent=4, ensure_ascii=False)
-
+        logging.info(f"Feedback in {feedback_file_path} gespeichert!")
     except Exception as e:
-        print(f"Fehler beim Speichern des Feedbacks: {e}")
+        logging.error(f"Fehler beim Speichern des Feedbacks: {e}")
 
-
-def augment_with_synonyms(text):
-    """
-    Ersetzt zufällige Wörter durch Synonyme, um das Training zu erweitern.
-    """
-    words = text.split()
+def augment_with_synonyms(words: List[str]) -> str:
     new_text = []
-    
     for word in words:
         synonyms = wordnet.synsets(word)
         if synonyms:
@@ -88,51 +79,30 @@ def augment_with_synonyms(text):
             new_text.append(synonym)
         else:
             new_text.append(word)
-    
     return " ".join(new_text)
 
-def load_feedback_data(filepath="data/feedback_data.json"):
-    try:
-        with open(filepath, "r") as feedback_file:
-            feedback_data = json.load(feedback_file)
-        return feedback_data
-    except FileNotFoundError:
-        print(f"Feedback-Datei {filepath} nicht gefunden.")
-        return []
-    
-# Augmentierung während der Datenaufbereitung in prepare_data_with_feedback:
-def prepare_data_with_feedback(training_data_file="data/training_data.json", feedback_file="data/feedback_data.json"):
-    """
-    Bereitet Trainingsdaten vor und kombiniert sie mit Feedback-Daten. 
-    Falls keine Dateien vorhanden sind, werden Standardfragen verwendet. 
-    Außerdem wird eine Datenaugmentierung durch Synonym-Ersetzungen durchgeführt.
-    """
-    
-    # Versuche, die Trainingsdaten zu laden, oder verwende Standarddaten
-    try:
+def prepare_data_with_feedback(training_data_file: str, feedback_file: str) -> List[Dict[str, str]]:
+    if os.path.exists(training_data_file):
         with open(training_data_file, "r", encoding="utf-8") as file:
             training_data = json.load(file)
-    except FileNotFoundError:
-        print(f"Keine Trainingsdaten gefunden.")
+    else:
+        logging.error(f"Keine Trainingsdaten gefunden.")
+        training_data = []
 
-    # Versuche, Feedbackdaten zu laden, oder verwende eine leere Liste
-    try:
+    if os.path.exists(feedback_file):
         with open(feedback_file, "r", encoding="utf-8") as file:
             feedback_data = json.load(file)
-    except FileNotFoundError:
-        print(f"Keine Feedbackdaten gefunden.")
+    else:
+        logging.error(f"Keine Feedbackdaten gefunden.")
         feedback_data = []
 
     combined_data = training_data + feedback_data
-
-    # Augmentiere Daten durch Synonym-Ersetzungen
     augmented_data = []
     for entry in combined_data:
         augmented_data.append(entry)
         augmented_entry = {
-            "input": augment_with_synonyms(entry["input"]),
+            "input": augment_with_synonyms(entry["input"].split()),
             "output": entry["output"]
         }
         augmented_data.append(augmented_entry)
-
     return augmented_data

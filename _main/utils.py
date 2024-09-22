@@ -1,14 +1,22 @@
 import tkinter as tk
-import threading
 import time
 import winsound
+import pyttsx3
 
-# Timer (15 Minuten)
-TIMEOUT = 15 * 60
+tts_engine = pyttsx3.init()
+
+def speak(text):
+    tts_engine.say(text)
+    tts_engine.runAndWait()
+def prompt_input(prompt_text):
+    speak(prompt_text)
+    return input(prompt_text).strip()
+
+
+TIMEOUT = 10 * 60
 last_activity_time = time.time()
 
 def remind_user():
-    """Erinnert den Benutzer alle 15 Minuten."""
     global last_activity_time
     while True:
         time_elapsed = time.time() - last_activity_time
@@ -17,7 +25,7 @@ def remind_user():
         time.sleep(60)
 
 def show_popup():
-    """Zeigt ein Popup an, um den Benutzer zu erinnern."""
+
     winsound.Beep(1000, 500)
     root = tk.Tk()
     root.withdraw()
@@ -25,6 +33,5 @@ def show_popup():
     root.destroy()
 
 def reset_timer():
-    """Setzt den Timer zurück."""
     global last_activity_time
     last_activity_time = time.time()
