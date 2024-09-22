@@ -1,6 +1,5 @@
 torch
 transformers
-ipywidgets
 nltk
 spacy
 de-core-news-sm>=3.0.0

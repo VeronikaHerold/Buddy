@@ -13,7 +13,7 @@ def prompt_input(prompt_text):
     return input(prompt_text).strip()
 
 
-TIMEOUT = 10 * 60
+TIMEOUT = 15 * 60
 last_activity_time = time.time()
 
 def remind_user():

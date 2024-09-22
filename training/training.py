@@ -2,7 +2,7 @@ import json
 from _main.utils import speak, prompt_input
 
 
-def training_mode(training_data_file="data/training_data.json", theme=""):
+def training_mode(training_data_file="data/{}/{}__training_data.json", theme=""):
     while True:
         question = prompt_input("Gib eine Frage ein (oder 'exit' zum Beenden): ").strip()
         if question.lower() == 'exit':
@@ -29,7 +29,7 @@ def training_mode(training_data_file="data/training_data.json", theme=""):
                 data.append(entry)
                 file.seek(0)
                 json.dump(data, file, indent=4, ensure_ascii=False)
-            message = f"Die Frage-Antwort-Paar wurde in {training_data_file} gespeichert!"
+            message = f"Das Frage-Antwort-Paar wurde in {training_data_file} gespeichert!"
             speak(message)
             print(message)
 
