@@ -1,11 +1,4 @@
 torch
-transformers
-nltk
 spacy
 de-core-news-sm>=3.0.0
-huggingface_hub
-ipython
-tqdm
 pyttsx3 
-pyaudio
-
